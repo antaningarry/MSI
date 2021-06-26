@@ -1,6 +1,7 @@
 package com.wipro.orderservice.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,7 +63,20 @@ public class OrderController {
 		return response;
 	}
 
+	@PostMapping("/order/list")
+	public ResponseEntity<List<Order>> getOrderItemsList(@RequestBody List<Long> orderIdList) {
+		ResponseEntity<List<Order>> response = null;
 
+		List<Order> ordersList = orderIdList.stream().map(ol -> service.getOrderItems(ol)).filter(ol -> ol != null)
+				.collect(Collectors.toList());
+
+		if (ordersList != null && ordersList.size() > 0) {
+			response = new ResponseEntity<>(ordersList, HttpStatus.OK);
+		} else {
+			response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return response;
+	}
 
 	@PutMapping("/order/{id}")
 	public ResponseEntity<Order> updateOrderItem(@RequestBody Order order, @PathVariable("id") Long id) {

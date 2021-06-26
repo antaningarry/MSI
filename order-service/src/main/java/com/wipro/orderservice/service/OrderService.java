@@ -22,8 +22,8 @@ public class OrderService {
 		return repo.findById(id).orElse(null);
 	}
 
-	public Order saveOrUpdate(Order cart) {
-		return repo.save(cart);
+	public Order saveOrUpdate(Order order) {
+		return repo.save(order);
 	}
 
 	public void deleteOrderItems(long id) {
