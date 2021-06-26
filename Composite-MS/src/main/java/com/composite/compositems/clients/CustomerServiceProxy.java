@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.composite.compositems.model.Customer;
+import com.composite.compositems.entity.Customer;
 
 @FeignClient(name="Customer-Service")
 public interface CustomerServiceProxy {
