@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.composite.compositems.clients.InventoryServiceProxy;
-import com.composite.compositems.entity.Inventory;
+import com.composite.compositems.model.product_inventory_ms.Inventory;
 
 @RestController
 public class InventoryController {

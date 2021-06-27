@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.composite.compositems.entity.Customer;
+import com.composite.compositems.model.customer_ms.Customer;
 
 @FeignClient(name="Customer-Service")
 public interface CustomerServiceProxy {
 	
 	@PostMapping("/customer")
-	public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer);
+	public ResponseEntity<Customer> saveCustomer(@RequestBody Customer customer);
 	
 	@GetMapping("/customer/{id}")
-	public Customer findCustomerById(@PathVariable("id") Long customerId);
+	public ResponseEntity<Customer> findCustomerById(@PathVariable("id") Long customerId);
 
 }
