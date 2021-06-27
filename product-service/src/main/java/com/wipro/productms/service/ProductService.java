@@ -28,7 +28,7 @@ public class ProductService {
 	}
 	public Product getProductById(long product_id)
 	{
-		return dao.findById(product_id).get();
+		return dao.findById(product_id).orElse(null);
 	}
 	
 	public void updateProduct(Product product)

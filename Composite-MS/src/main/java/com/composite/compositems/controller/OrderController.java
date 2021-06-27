@@ -75,20 +75,19 @@ public class OrderController {
 				}).collect(Collectors.toList());
 				double totalPrice = 0;
 				if (orderLineItems != null && orderLineItems.size() > 0) {
-					totalPrice = orderLineItems.stream().mapToDouble(ol -> ol.getPrice()).sum();
+					totalPrice = orderLineItems.stream().mapToDouble(ol -> ol.getPrice() * ol.getQuantity()).sum();
 				}
 				ResponseEntity<Order> orderResponse = orderServiceProxy.saveOrderItem(
 						new Order(LocalDate.now(), totalPrice, customer.getShippingAddress(), orderLineItems));
 				Order order = orderResponse.getBody();
-				// TODO: customerOrderRepo.save(new CustomerOrderEntity(new
-				// CustomerOrderEmbeddable(customer.getCustomerId(), order.getOrderId())));
-				// TODO:Remove the products in the cart
-				cart.setcartLineItems(null);
-				// cartServiceProxy.updateCartItem(cart);
+				customerOrderRepo.save(new CustomerOrderEntity(
+						new CustomerOrderEmbeddable(customer.getCustomerId(), order.getOrderId())));
+				// Remove the products in the cart
+				cartServiceProxy.deleteCartLineItems(cart.getCartId());
+				// Reduce the product quantity details in the inventory
 				order.getOrderLineItems().forEach(ol -> {
-					// TODO: implement in inventoryservice
-					// inventoryServiceProxy.reduceQtyOfProduct(new Inventory(ol.getProductId(),
-					// (int) ol.getQuantity()));
+					inventoryServiceProxy
+							.reduceInventoryQuantity(new Inventory(ol.getProductId(), (int) ol.getQuantity()));
 				});
 				return new ResponseEntity<>(new OrderResponse(customerId, Arrays.asList(order)), HttpStatus.ACCEPTED);
 			} else {
@@ -106,12 +105,12 @@ public class OrderController {
 	 * @param customerId
 	 * @return
 	 */
-	@GetMapping("/customers/{customerId}/orders	")
+	@GetMapping("/customers/{customerId}/orders")
 	public ResponseEntity<OrderResponse> getOrders(@PathVariable("customerId") Long customerId) {
 		ResponseEntity<OrderResponse> response = null;
-		List<CustomerOrderEntity> cutomerOrderList = customerOrderRepo.findByCustomerId(customerId);
-		if (cutomerOrderList != null && cutomerOrderList.size() > 0) {
-			List<Long> orderIdList = cutomerOrderList.stream().map(customerOrder -> customerOrder.getId().getOrderId())
+		List<CustomerOrderEntity> customerOrderList = customerOrderRepo.findByCustomerId(customerId);
+		if (customerOrderList != null && customerOrderList.size() > 0) {
+			List<Long> orderIdList = customerOrderList.stream().map(customerOrder -> customerOrder.getId().getOrderId())
 					.collect(Collectors.toList());
 			ResponseEntity<List<Order>> orderListResponse = orderServiceProxy.getOrderItemsList(orderIdList);
 			OrderResponse orderResponse = new OrderResponse(customerId, orderListResponse.getBody());

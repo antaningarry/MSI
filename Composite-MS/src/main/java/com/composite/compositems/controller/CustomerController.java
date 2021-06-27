@@ -39,7 +39,7 @@ public class CustomerController {
 		CustomerCartEmbeddable cc=new CustomerCartEmbeddable(customer.getCustomerId(),cart.getCartId());
 		CustomerCartEntity entity=new CustomerCartEntity(cc);
 		ccRepo.save(entity);
-		return new CustomerData(customer.getCustomerId(),customer.getCustomerName(),customer.getEmail(),customer.getShippingAddress(),customer.getBillingAddress(),cart.getCartId());
+		return new CustomerData(customer.getCustomerId(),customer.getCustomerName(),customer.getEmail(),customer.getBillingAddress(),customer.getShippingAddress(),cart.getCartId());
 		
 	}
 	
@@ -50,7 +50,7 @@ public class CustomerController {
 		ResponseEntity<Customer> customerResponse=CustomerProxy.findCustomerById(customerId);
 		Customer customer = customerResponse.getBody();
 		CustomerCartEntity cc= ccRepo.findByCustomerId(customerId).get(0);
-		return new CustomerData(customer.getCustomerId(),customer.getCustomerName(),customer.getEmail(),customer.getShippingAddress(),customer.getBillingAddress(),cc.getId().getCartId());
+		return new CustomerData(customer.getCustomerId(),customer.getCustomerName(),customer.getEmail(),customer.getBillingAddress(),customer.getShippingAddress(),cc.getId().getCartId());
 	}
 
 }

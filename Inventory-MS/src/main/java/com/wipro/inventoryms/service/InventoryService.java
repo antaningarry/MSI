@@ -27,7 +27,7 @@ public class InventoryService {
 	}
 	public Inventory getInventoryById(long product_id)
 	{
-		return dao.findById(product_id).get();
+		return dao.findById(product_id).orElse(null);
 	}
 	
 	public void updateInventory(Inventory inventory)

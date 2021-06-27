@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,10 +42,11 @@ public class CartController {
 			@PathVariable("id") Long customerId) {
 
 		Cart cart = new Cart();
-		CartLineItem lineitem = new CartLineItem();
+		CartLineItem lineitem = null;
 		List<CartLineItem> cartLineItemList = new ArrayList<CartLineItem>();
 		for (CartList request : cartRequest) {
 			Product product = productProxy.findProductById(request.getProductId());
+			lineitem = new CartLineItem();
 			lineitem.setProductId(product.getProduct_id());
 			lineitem.setProductName(product.getProduct_name());
 			lineitem.setQuantity(request.getQuantity());
@@ -54,17 +56,21 @@ public class CartController {
 		CustomerCartEntity entity = custCartRepository.findByCustomerId(customerId).get(0);
 		cart.setCartId(entity.getId().getCartId());
 		cart.setcartLineItems(cartLineItemList);
-		return cartProxy.saveCartItem(cart);
+		return cartProxy.updateCartItem(cart, cart.getCartId());
 	}
 
 	@GetMapping("customers/{cusId}/cart/")
-	public ResponseEntity<Cart> findCartById(@PathVariable("id") Long customerId) {
+	public ResponseEntity<Cart> findCartById(@PathVariable("cusId") Long customerId) {
 		ResponseEntity<Customer> customerResponse = customerProxy.findCustomerById(customerId);
 		Customer customer = customerResponse.getBody();
 		if (customer.getCustomerName().equals(null) || customer.getCustomerName().equals("null")) {
 			throw new RecordNotFoundException("customer details not found with this id :     " + customerId);
 		}
-		CustomerCartEntity entity = custCartRepository.findByCustomerId(customerId).get(0);
-		return cartProxy.getCartItems(entity.getId().getCartId());
+		List<CustomerCartEntity> list = custCartRepository.findByCustomerId(customerId);
+		if (list != null && list.size() > 0) {
+			CustomerCartEntity entity = list.get(0);
+			return cartProxy.getCartItems(entity.getId().getCartId());
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 }

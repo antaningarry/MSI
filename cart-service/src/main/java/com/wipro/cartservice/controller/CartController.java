@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wipro.cartservice.entity.Cart;
+import com.wipro.cartservice.entity.CartLineItem;
 import com.wipro.cartservice.service.CartService;
 
 @RestController
@@ -65,13 +66,30 @@ public class CartController {
 	@PutMapping("/cart/{id}")
 	public ResponseEntity<Cart> updateCartItem(@RequestBody Cart cart, @PathVariable("id") Long id) {
 		ResponseEntity<Cart> response = null;
-		cart.setCartId(id);
 		Cart cartFound = service.getCartItems(id);
 		if (cartFound == null) {
 			response = new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
 		} else {
 			cart = service.saveOrUpdate(cart);
 			response = new ResponseEntity<>(cart, HttpStatus.ACCEPTED);
+		}
+		return response;
+	}
+	
+	@DeleteMapping("/cart/{id}/cartItems")
+	public ResponseEntity<Cart> deleteCartLineItems(@PathVariable("id") Long id) {
+		ResponseEntity<Cart> response = null;
+		Cart cartFound = service.getCartItems(id);
+		if (cartFound == null) {
+			response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			List<CartLineItem> lineItems = cartFound.getcartLineItems();
+			cartFound.setcartLineItems(null);;
+			cartFound = service.saveOrUpdate(cartFound);
+			lineItems.forEach(li -> {
+				service.deleteCartLineItems(li.getOid());
+			});
+			response = new ResponseEntity<>(cartFound, HttpStatus.ACCEPTED);
 		}
 		return response;
 	}

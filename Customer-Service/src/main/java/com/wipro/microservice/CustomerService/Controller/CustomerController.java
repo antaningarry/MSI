@@ -78,7 +78,7 @@ public class CustomerController {
 	public ResponseEntity<Customer> UpdateCustomerDetails(@RequestBody Customer customer,@PathVariable("id") Long customerId)
 	{
 		ResponseEntity<Customer> response = null;
-		customer.setCustomerId(customerId);;
+		customer.setCustomerId(customerId);
 		Customer customerFound =customerService.findCustomerById(customerId);
 		if (customerFound == null) {
 			response = new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);

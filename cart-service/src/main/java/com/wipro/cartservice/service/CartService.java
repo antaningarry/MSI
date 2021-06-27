@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wipro.cartservice.entity.Cart;
+import com.wipro.cartservice.repository.CartLineItemRepository;
 import com.wipro.cartservice.repository.CartRepository;
 
 @Service
@@ -13,6 +14,8 @@ public class CartService {
 
 	@Autowired
 	private CartRepository repo;
+	
+	@Autowired CartLineItemRepository cartItemsRepo;
 
 	public List<Cart> getAllCartItems() {
 		return repo.findAll();
@@ -28,6 +31,10 @@ public class CartService {
 
 	public void deleteCartItems(long id) {
 		repo.deleteById(id);
+	}
+	
+	public void deleteCartLineItems(long id) {
+		cartItemsRepo.deleteById(id);
 	}
 
 }
