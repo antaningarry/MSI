@@ -1,15 +1,30 @@
-package com.composite.compositems.model.cart_ms;
+package com.wipro.cartservice.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "CART_LINE_ITEM")
 public class CartLineItem {
 
+	@Id
+	@GeneratedValue
+	@Column(name = "CART_LINE_ITEM_ID")
 	private Long oid;
 
+	@Column(name = "PRODUCT_ID")
 	private Long productId;
 
+	@Column(name = "PRODUCT_NAME")
 	private String productName;
 
+	@Column(name = "QTY")
 	private int quantity;
 
+	@Column(name = "PRICE")
 	private double price;
 
 	public CartLineItem() {

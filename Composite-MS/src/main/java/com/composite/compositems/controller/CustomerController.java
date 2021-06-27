@@ -16,7 +16,7 @@ import com.composite.compositems.entity.CustomerCartEntity;
 import com.composite.compositems.model.cart_ms.Cart;
 import com.composite.compositems.model.customer_ms.Customer;
 import com.composite.compositems.model.customer_ms.CustomerData;
-import com.composite.compositems.repos.CustomerCartDatarepo;
+import com.composite.compositems.repos.CustomerCartRepository;
 
 @RestController
 public class CustomerController {
@@ -28,17 +28,18 @@ public class CustomerController {
 	private CartServiceProxy CartProxy;
 	
 	@Autowired
-	private CustomerCartDatarepo ccRepo;
+	private CustomerCartRepository ccRepo;
 	@PostMapping("/customer")
 	public CustomerData createCustomer(@RequestBody CustomerData customerdata)
 	{
 		ResponseEntity<Customer> customerResponse = CustomerProxy.saveCustomer(new Customer(customerdata.getCustomerName(), customerdata.getEmail(),customerdata.getShippingAddress(),customerdata.getBillingAddress()));
 		Customer customer = customerResponse.getBody();
-		Cart cart = CartProxy.saveCartItem(new Cart());
-		CustomerCartEmbeddable cc=new CustomerCartEmbeddable(customer.getCustomerId(),cart.getId());
+		ResponseEntity<Cart> cartResponse = CartProxy.saveCartItem(new Cart()); 
+		Cart cart = cartResponse.getBody();
+		CustomerCartEmbeddable cc=new CustomerCartEmbeddable(customer.getCustomerId(),cart.getCartId());
 		CustomerCartEntity entity=new CustomerCartEntity(cc);
 		ccRepo.save(entity);
-		return new CustomerData(customer.getCustomerId(),customer.getCustomerName(),customer.getEmail(),customer.getShippingAddress(),customer.getBillingAddress(),cart.getId());
+		return new CustomerData(customer.getCustomerId(),customer.getCustomerName(),customer.getEmail(),customer.getShippingAddress(),customer.getBillingAddress(),cart.getCartId());
 		
 	}
 	

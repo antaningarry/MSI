@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wipro.cartservice.entity.Order;
+import com.wipro.cartservice.entity.Cart;
 import com.wipro.cartservice.repository.CartRepository;
 
 @Service
@@ -14,15 +14,15 @@ public class CartService {
 	@Autowired
 	private CartRepository repo;
 
-	public List<Order> getAllCartItems() {
+	public List<Cart> getAllCartItems() {
 		return repo.findAll();
 	}
 
-	public Order getCartItems(long id) {
+	public Cart getCartItems(long id) {
 		return repo.findById(id).orElse(null);
 	}
 
-	public Order saveOrUpdate(Order cart) {
+	public Cart saveOrUpdate(Cart cart) {
 		return repo.save(cart);
 	}
 

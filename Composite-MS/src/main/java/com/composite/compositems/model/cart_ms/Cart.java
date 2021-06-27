@@ -18,11 +18,11 @@ public class Cart {
 		this.cartLineItems = cartLineItems;
 	}
 
-	public Long getId() {
+	public Long getCartId() {
 		return cartId;
 	}
 
-	public void setId(Long id) {
+	public void setCartId(Long id) {
 		this.cartId = id;
 	}
 

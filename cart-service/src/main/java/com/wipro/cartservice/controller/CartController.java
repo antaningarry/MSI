@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wipro.cartservice.entity.Order;
+import com.wipro.cartservice.entity.Cart;
 import com.wipro.cartservice.service.CartService;
 
 @RestController
@@ -23,10 +23,10 @@ public class CartController {
 	private CartService service;
 
 	@GetMapping("/cart")
-	public ResponseEntity<List<Order>> getAllCartItems() {
-		ResponseEntity<List<Order>> response;
+	public ResponseEntity<List<Cart>> getAllCartItems() {
+		ResponseEntity<List<Cart>> response;
 
-		List<Order> cartItems = service.getAllCartItems();
+		List<Cart> cartItems = service.getAllCartItems();
 
 		if (cartItems != null && cartItems.size() > 0) {
 			response = new ResponseEntity<>(cartItems, HttpStatus.OK);
@@ -37,10 +37,10 @@ public class CartController {
 	}
 
 	@GetMapping("/cart/{id}")
-	public ResponseEntity<Order> getCartItems(@PathVariable("id") Long id) {
-		ResponseEntity<Order> response;
+	public ResponseEntity<Cart> getCartItems(@PathVariable("id") Long id) {
+		ResponseEntity<Cart> response;
 
-		Order cartItem = service.getCartItems(id);
+		Cart cartItem = service.getCartItems(id);
 
 		if (cartItem != null) {
 			response = new ResponseEntity<>(cartItem, HttpStatus.OK);
@@ -51,9 +51,9 @@ public class CartController {
 	}
 
 	@PostMapping("/cart")
-	public ResponseEntity<Order> saveCartItem(@RequestBody Order cart) {
-		ResponseEntity<Order> response = null;
-		if (cart.getId() != null) {
+	public ResponseEntity<Cart> saveCartItem(@RequestBody Cart cart) {
+		ResponseEntity<Cart> response = null;
+		if (cart.getCartId() != null) {
 			response = new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
 		} else {
 			cart = service.saveOrUpdate(cart);
@@ -63,10 +63,10 @@ public class CartController {
 	}
 
 	@PutMapping("/cart/{id}")
-	public ResponseEntity<Order> updateCartItem(@RequestBody Order cart, @PathVariable("id") Long id) {
-		ResponseEntity<Order> response = null;
-		cart.setId(id);
-		Order cartFound = service.getCartItems(id);
+	public ResponseEntity<Cart> updateCartItem(@RequestBody Cart cart, @PathVariable("id") Long id) {
+		ResponseEntity<Cart> response = null;
+		cart.setCartId(id);
+		Cart cartFound = service.getCartItems(id);
 		if (cartFound == null) {
 			response = new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
 		} else {
@@ -77,10 +77,10 @@ public class CartController {
 	}
 
 	@DeleteMapping("/cart/{id}")
-	public ResponseEntity<Order> deleteCartItems(@PathVariable("id") Long id) {
-		ResponseEntity<Order> response;
+	public ResponseEntity<Cart> deleteCartItems(@PathVariable("id") Long id) {
+		ResponseEntity<Cart> response;
 
-		Order cartItem = service.getCartItems(id);
+		Cart cartItem = service.getCartItems(id);
 
 		if (cartItem != null) {
 			service.deleteCartItems(id);
